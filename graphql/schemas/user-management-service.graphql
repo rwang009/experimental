@@ -1,0 +1,135 @@
+# GraphQL Schema for User Management Service
+# Contains user profiles, document management, and analytics functionality
+
+type User {
+  id: String
+  name: String!
+  email: String
+
+}
+
+type Document {
+  id: ID!
+  title: String!
+  content: String
+}
+
+interface UserInterface {
+  id: ID!
+  name: String!
+}
+
+input UserRequest {
+  id: ID
+  name: String!
+  email: String!
+}
+
+input UserCriteria {
+  name: String
+  email: String
+}
+
+type Member {
+  id: ID!
+  userId: String!
+  profile: Profile
+}
+
+type Profile {
+  bio: String
+  avatar: String
+}
+
+type Query {
+  getUser(id: String!): User
+  getAllUsersWithProfiles: [User!]!
+  searchUsers(criteria: UserCriteria!): [User!]!
+}
+
+type Mutation {
+  createUser(input: UserRequest!): User!
+  updateUserProfile(userId: ID!, data: ProfileInput!): User!
+}
+
+input ProfileInput {
+  bio: String
+  avatar: String
+}
+
+type AdminUser implements UserInterface {
+  id: ID!
+  permissions: [String!]!
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+type LegacyUser {
+  id: ID!
+  oldField: String
+  newField: String
+}
+
+type Order {
+  id: ID!
+  userId: ID!
+  items: [OrderItem!]!
+}
+
+type OrderItem {
+  id: ID!
+  productId: ID!
+  quantity: Int!
+}
+
+type Address {
+  street: String!
+  city: String!
+  state: String!
+  zipCode: String!
+}
+
+union SearchResult = User | Document
+
+scalar DateTime
+
+type Organization {
+  id: ID!
+  name: String!
+  users: [User!]!
+  departments: [Department!]!
+}
+
+type Department {
+  id: ID!
+  name: String!
+  users: [User!]!
+  manager: User!
+}
+
+type Mutation {
+  deleteUser(id: String!): Boolean!
+  transferOwnership(fromUserId: String!, toUserId: String!): Boolean!
+}
+
+type Analytics {
+  id: ID!
+  metricValue: Float!
+  aggregationType: String!
+  timeWindow: String!
+}
+
+type UserProfile {
+  id: ID!
+  bio: String!
+  preferences: UserPreferences!
+}
+
+type UserPreferences {
+  theme: String!
+  notifications: Boolean!
+}
